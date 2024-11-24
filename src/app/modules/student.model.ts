@@ -34,7 +34,7 @@ const StudentSchema = new Schema<Student>({
   email: { type: String, required: true, unique: true },
   avatar: { type: String },
   dateOfBirth: { type: String, required: true },
-  contactNo: { type: String, required: true },
+  contactNo: { type: Number, required: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: { type: String },
   presentAddress: { type: String, required: true },

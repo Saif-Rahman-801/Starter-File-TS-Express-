@@ -27,7 +27,7 @@ export type Student = {
   email: string;
   avatar?: string;
   dateOfBirth: string;
-  contactNo: string;
+  contactNo: number;
   emergencyContactNo: string;
   bloodGroup?: string;
   presentAddress: string;
