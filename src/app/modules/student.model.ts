@@ -46,5 +46,5 @@ const StudentSchema = new Schema<Student>({
 
 // export default mongoose.model<Student>('Student', StudentSchema);
 
-const Student = model<Student>('Student', StudentSchema);
-export default Student;
+const StudentModel = model<Student>('Student', StudentSchema);
+export default StudentModel;
