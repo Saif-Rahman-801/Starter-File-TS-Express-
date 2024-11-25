@@ -38,6 +38,7 @@ export type Student = {
   localGuardian: LocalGuardin;
   profileImg: string;
   isActive: 'active' | 'inactive';
+  isDeleted: boolean
 };
 
 // Declaring type for custom mongoose instance

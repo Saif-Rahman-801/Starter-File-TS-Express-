@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   createStudentIntoDb,
+  deleteSingleStudent,
   getAllStudents,
   getSingleStudent,
 } from './student.service';
@@ -61,5 +62,22 @@ const getAStudentFromDB = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+const deleteAStudentFromDB = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
 
-export { createStudent, getAllStudentsFromDB, getAStudentFromDB };
+    const result = await deleteSingleStudent(id);
+    console.log(result);
+
+    res.status(200).json({
+      success: true,
+      message: 'A student deleted',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { createStudent, getAllStudentsFromDB, getAStudentFromDB, deleteAStudentFromDB };

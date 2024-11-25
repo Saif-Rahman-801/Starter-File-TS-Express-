@@ -9,7 +9,7 @@ import {
   Username,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 import config from '../../config';
 
 const UserNameSchema = new Schema<Username>({
@@ -65,7 +65,7 @@ const StudentSchema = new Schema<
     type: String,
     required: true,
     unique: true,
-    maxLength: [20, "Can't be more than 20 charcters"]
+    maxLength: [20, "Can't be more than 20 charcters"],
   },
   name: {
     type: UserNameSchema,
@@ -104,28 +104,49 @@ const StudentSchema = new Schema<
     default: 'active',
     required: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-
 // Mongoose middleware
-StudentSchema.pre("save", async function (next) {
+StudentSchema.pre('save', async function (next) {
   // console.log(this, "Pre saving data");
   // hashing password
-const user = this
+  const user = this;
 
-  user.password = await bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
-  next()
-})
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bycrypt_salt_rounds),
+  );
+  next();
+});
 
-StudentSchema.post("save", function () {
-  console.log(this, "post saving data");
-  
-})
+StudentSchema.post(
+  'save',
+  /* this "save" event is same as the event you call for db(DB.save()) manipulation, function */ function (
+    doc,
+    next,
+  ) {
+    // console.log(this, "post saving data");
+    doc.password = '';
+    next();
+  },
+);
 
-
-
-
-
+StudentSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+StudentSchema.pre('findOne', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+StudentSchema.pre('aggregate', async function (next) {
+  this.pipeline().unshift({$match: {isDeleted: {$ne: true}}})
+  next();
+});
 
 // creating custom instance method
 StudentSchema.methods.isUserExists = async function (id: string) {
@@ -139,5 +160,8 @@ StudentSchema.statics.isUserExiststwo = async function (id: string) {
   return existingUser;
 };
 
-const StudentModel = model<Student, /* ModelOfStudent // it's for custom instance*/ ModelOfstuStatic>('Student', StudentSchema);
+const StudentModel = model<
+  Student,
+  /* ModelOfStudent // it's for custom instance*/ ModelOfstuStatic
+>('Student', StudentSchema);
 export default StudentModel;

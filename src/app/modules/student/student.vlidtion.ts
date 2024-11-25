@@ -114,6 +114,7 @@ const StudentZodSchema = z.object({
   id: z.string().min(1, 'ID is required'),
   password: z.string().max(20),
   name: UserNameZodSchema,
+  isDeleted: z.boolean(),
   gender: z
     .enum(['male', 'female', 'others'], {
       errorMap: () => ({ message: 'Gender can only be male, female, or others' }),
