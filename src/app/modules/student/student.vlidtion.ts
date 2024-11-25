@@ -112,6 +112,7 @@ const LocalGuardianZodSchema = z.object({
 // Define the main Student schema
 const StudentZodSchema = z.object({
   id: z.string().min(1, 'ID is required'),
+  password: z.string().max(20),
   name: UserNameZodSchema,
   gender: z
     .enum(['male', 'female', 'others'], {

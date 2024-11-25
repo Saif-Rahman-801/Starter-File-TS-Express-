@@ -25,6 +25,7 @@ export type LocalGuardin = {
 export type Student = {
   id: string;
   name: Username;
+  password: string;
   gender: 'male' | 'female' | 'others';
   email: string;
   avatar?: string;
@@ -42,6 +43,10 @@ export type Student = {
 // Declaring type for custom mongoose instance
 export type StudentCustomMothods = {
   isUserExists(id: string): Promise<Student | null>
+}
+
+export interface ModelOfstuStatic extends Model<Student>{
+  isUserExiststwo(id: string): Promise<Student | null>
 }
 
 

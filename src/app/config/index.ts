@@ -6,4 +6,5 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 export default {
   port: process.env.PORT || 3000,
   databaseUrl: process.env.DB_URI,
+  bycrypt_salt_rounds: process.env.BCYPT_SALT_ROUNDS,
 };

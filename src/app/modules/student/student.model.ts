@@ -1,6 +1,16 @@
-import mongoose, { model, Schema } from 'mongoose';
-import { Guardian, LocalGuardin, ModelOfStudent, Student, StudentCustomMothods, Username } from './student.interface';
+import mongoose, { Model, model, Schema } from 'mongoose';
+import {
+  Guardian,
+  LocalGuardin,
+  ModelOfStudent,
+  ModelOfstuStatic,
+  Student,
+  StudentCustomMothods,
+  Username,
+} from './student.interface';
 import validator from 'validator';
+import bcrypt from 'bcrypt'
+import config from '../../config';
 
 const UserNameSchema = new Schema<Username>({
   firstName: {
@@ -8,7 +18,7 @@ const UserNameSchema = new Schema<Username>({
     required: [true, 'First name is required'],
     trim: true,
     maxlength: [20, "first name can't be more than 20 characters"],
-   /*  validate: {
+    /*  validate: {
       validator: function (str: string) {
         const firstNameStr = str.charAt(0).toUpperCase() + str.slice(1);
         return firstNameStr === str;
@@ -46,8 +56,17 @@ const LocalGuardianSchema = new Schema<LocalGuardin>({
   address: { type: String, required: true },
 });
 
-const StudentSchema = new Schema<Student, ModelOfStudent, StudentCustomMothods>({
+const StudentSchema = new Schema<
+  Student /* ModelOfStudent, StudentCustomMothods (These are for custom instances) */,
+  ModelOfstuStatic
+>({
   id: { type: String, unique: true },
+  password: {
+    type: String,
+    required: true,
+    unique: true,
+    maxLength: [20, "Can't be more than 20 charcters"]
+  },
   name: {
     type: UserNameSchema,
     trim: true,
@@ -87,12 +106,38 @@ const StudentSchema = new Schema<Student, ModelOfStudent, StudentCustomMothods>(
   },
 });
 
-// export default mongoose.model<Student>('Student', StudentSchema);
+
+// Mongoose middleware
+StudentSchema.pre("save", async function (next) {
+  // console.log(this, "Pre saving data");
+  // hashing password
+const user = this
+
+  user.password = await bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
+  next()
+})
+
+StudentSchema.post("save", function () {
+  console.log(this, "post saving data");
+  
+})
+
+
+
+
+
+
+// creating custom instance method
 StudentSchema.methods.isUserExists = async function (id: string) {
-  const existingUser = await StudentModel.findOne({id})
-  return existingUser
-}
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
 
+// creating a custom static Method
+StudentSchema.statics.isUserExiststwo = async function (id: string) {
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
 
-const StudentModel = model<Student, ModelOfStudent>('Student', StudentSchema);
+const StudentModel = model<Student, /* ModelOfStudent // it's for custom instance*/ ModelOfstuStatic>('Student', StudentSchema);
 export default StudentModel;
