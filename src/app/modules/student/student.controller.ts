@@ -1,10 +1,22 @@
 import { Request, Response } from 'express';
-import { createStudentIntoDb, getAllStudents } from './student.service';
+import {
+  createStudentIntoDb,
+  getAllStudents,
+  getSingleStudent,
+} from './student.service';
+import StudentJoiSchema from './student.vlidtion';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
+
     const { student: studentData } = req.body;
-    const result = await createStudentIntoDb(studentData);
+
+    const { error, value } = StudentJoiSchema.validate(studentData);
+
+    console.log(error, value);
+    
+
+    const result = await createStudentIntoDb(value);
     res.status(200).json({
       success: true,
       message: 'Student created successfully',
@@ -28,4 +40,22 @@ const getAllStudentsFromDB = async (req: Request, res: Response) => {
   }
 };
 
-export { createStudent, getAllStudentsFromDB };
+const getAStudentFromDB = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+
+    const result = await getSingleStudent(id);
+    console.log(result);
+
+    res.status(200).json({
+      success: true,
+      message: 'A student loaded',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { createStudent, getAllStudentsFromDB, getAStudentFromDB };

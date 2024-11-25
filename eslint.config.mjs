@@ -1,13 +1,15 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import prettierConfig from "eslint-plugin-prettier/recommended";
+import tseslint from "@typescript-eslint/eslint-plugin"; // Ensure @typescript-eslint is properly imported
+import tsParser from "@typescript-eslint/parser";
+import prettierConfig from "eslint-config-prettier"; // Use eslint-config-prettier instead
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   { 
     files: ["**/*.{js,mjs,cjs,ts}"],
     languageOptions: {
+      parser: tsParser,
       globals: { 
         ...globals.browser,
         process: "readonly",
@@ -25,6 +27,12 @@ export default [
     },
   },
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...prettierConfig,  // Add Prettier's recommended configuration here
+  tseslint.configs.recommended,
+  prettierConfig,  // Use prettierConfig to disable conflicting rules with Prettier
+  {
+    plugins: ["prettier"],
+    rules: {
+      "prettier/prettier": "error", // Enforce Prettier formatting as ESLint rules
+    },
+  }
 ];
