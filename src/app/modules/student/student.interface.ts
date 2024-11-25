@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export type Guardian = {
   fatherName: string;
   fatherOccupation: string;
@@ -36,3 +38,11 @@ export type Student = {
   profileImg: string;
   isActive: 'active' | 'inactive';
 };
+
+// Declaring type for custom mongoose instance
+export type StudentCustomMothods = {
+  isUserExists(id: string): Promise<Student | null>
+}
+
+
+export type ModelOfStudent = Model<Student, {}, StudentCustomMothods>

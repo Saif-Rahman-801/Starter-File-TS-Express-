@@ -1,5 +1,5 @@
 import mongoose, { model, Schema } from 'mongoose';
-import { Guardian, LocalGuardin, Student, Username } from './student.interface';
+import { Guardian, LocalGuardin, ModelOfStudent, Student, StudentCustomMothods, Username } from './student.interface';
 import validator from 'validator';
 
 const UserNameSchema = new Schema<Username>({
@@ -46,7 +46,7 @@ const LocalGuardianSchema = new Schema<LocalGuardin>({
   address: { type: String, required: true },
 });
 
-const StudentSchema = new Schema<Student>({
+const StudentSchema = new Schema<Student, ModelOfStudent, StudentCustomMothods>({
   id: { type: String, unique: true },
   name: {
     type: UserNameSchema,
@@ -88,6 +88,11 @@ const StudentSchema = new Schema<Student>({
 });
 
 // export default mongoose.model<Student>('Student', StudentSchema);
+StudentSchema.methods.isUserExists = async function (id: string) {
+  const existingUser = await StudentModel.findOne({id})
+  return existingUser
+}
 
-const StudentModel = model<Student>('Student', StudentSchema);
+
+const StudentModel = model<Student, ModelOfStudent>('Student', StudentSchema);
 export default StudentModel;
