@@ -9,13 +9,13 @@ export type Guardian = {
 
 export type Username = {
   firstName: string;
-  middleName?: string;
+  middleName?: string|undefined;
   lastName: string;
 };
 
 export type LocalGuardin = {
   name: string;
-  occupation: string;
+  occupation?: string;
   address: string;
   contactNo: Number;
 };
@@ -23,7 +23,7 @@ export type LocalGuardin = {
 export type Student = {
   id: string;
   name: Username;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'others';
   email: string;
   avatar?: string;
   dateOfBirth: string;

@@ -4,19 +4,23 @@ import {
   getAllStudents,
   getSingleStudent,
 } from './student.service';
-import StudentJoiSchema from './student.vlidtion';
+import { z } from 'zod';
+import StudentZodSchema from './student.vlidtion';
+// import StudentJoiSchema from './student.vlidtion';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
 
     const { student: studentData } = req.body;
 
-    const { error, value } = StudentJoiSchema.validate(studentData);
+    const zodValidatedData = StudentZodSchema.parse(studentData)
 
-    console.log(error, value);
+    // const { error, value } = StudentJoiSchema.validate(studentData);
+
+    // console.log(error, value);
     
 
-    const result = await createStudentIntoDb(value);
+    const result = await createStudentIntoDb(zodValidatedData);
     res.status(200).json({
       success: true,
       message: 'Student created successfully',
